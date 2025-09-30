@@ -6,16 +6,14 @@ async function start() {
   try {
     const app = await createApp();
     
-    await app.listen({
-      port: config.port,
-      host: config.host,
+    const address = await app.listen({
+      port: config.PORT,
+      host: '0.0.0.0',
     });
-
-    logger.info({
-      port: config.port,
-      host: config.host,
-      env: config.nodeEnv,
-    }, 'Server started successfully');
+    
+    logger.info(`🚀 Server listening at ${address}`);
+    logger.info(`📊 Health check: ${address}/health`);
+    logger.info(`🔧 API status: ${address}/api/status`);
   } catch (error) {
     logger.error({ error }, 'Failed to start server');
     process.exit(1);

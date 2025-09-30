@@ -3,125 +3,61 @@ import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import jwt from '@fastify/jwt';
 import rateLimit from '@fastify/rate-limit';
-import websocket from '@fastify/websocket';
 import { config } from './config';
 import { logger } from './lib/logger';
-import { WebSocketManager } from './lib/websocket';
-import { errorHandler, requestLogger } from './middleware/auth';
-import { authRoutes } from './routes/auth';
-import { groupRoutes } from './routes/groups';
-import { sessionRoutes } from './routes/sessions';
 
 export async function createApp() {
   const fastify = Fastify({
-    logger: logger,
-    trustProxy: true,
-    bodyLimit: config.maxFileSize,
+    logger: {
+      level: config.NODE_ENV === 'production' ? 'info' : 'debug',
+    },
   });
 
   // Register plugins
-  await fastify.register(helmet, {
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        scriptSrc: ["'self'"],
-        imgSrc: ["'self'", "data:", "https:"],
-      },
-    },
-  });
-
   await fastify.register(cors, {
-    origin: config.corsOrigin,
+    origin: true,
     credentials: true,
   });
 
+  await fastify.register(helmet, {
+    contentSecurityPolicy: false,
+  });
+
   await fastify.register(jwt, {
-    secret: config.jwtSecret,
-    sign: {
-      issuer: 'clocked',
-      audience: 'clocked-users',
-    },
-    verify: {
-      issuer: 'clocked',
-      audience: 'clocked-users',
-    },
+    secret: config.JWT_SECRET,
   });
 
   await fastify.register(rateLimit, {
-    max: config.rateLimitMax,
-    timeWindow: config.rateLimitWindow,
-    errorResponseBuilder: () => ({
-      success: false,
-      error: {
-        code: 'RATE_LIMIT_EXCEEDED',
-        message: 'Too many requests',
-      },
-    }),
+    max: 100,
+    timeWindow: '1 minute',
   });
 
-  await fastify.register(websocket, {
-    options: {
-      maxPayload: 1024 * 1024, // 1MB
-    },
-  });
-
-  // Register middleware
-  fastify.addHook('preHandler', requestLogger);
-  fastify.setErrorHandler(errorHandler);
-
-  // Health check
+  // Health check route
   fastify.get('/health', async (request, reply) => {
-    return reply.send({
-      status: 'ok',
-      timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
-      version: process.env.npm_package_version || '1.0.0',
-    });
+    return { status: 'ok', timestamp: new Date().toISOString() };
   });
 
   // API routes
-  await fastify.register(authRoutes, { prefix: '/v1/auth' });
-  await fastify.register(groupRoutes, { prefix: '/v1/groups' });
-  await fastify.register(sessionRoutes, { prefix: '/v1/sessions' });
-
-  // WebSocket support
-  let wsManager: WebSocketManager;
-
-  fastify.ready().then(() => {
-    wsManager = new WebSocketManager(fastify.server);
-    
-    // Make WebSocket manager available to routes
-    fastify.decorate('wsManager', wsManager);
+  fastify.get('/api/status', async (request, reply) => {
+    return { 
+      message: 'Clocked API is running!',
+      version: '1.0.0',
+      timestamp: new Date().toISOString()
+    };
   });
 
-  // Graceful shutdown
-  const gracefulShutdown = async (signal: string) => {
-    logger.info({ signal }, 'Received shutdown signal');
+  // Error handler
+  fastify.setErrorHandler(async (error, request, reply) => {
+    logger.error({ error, request: request.url }, 'Request error');
     
-    try {
-      if (wsManager) {
-        wsManager.close();
-      }
-      
-      await fastify.close();
-      logger.info('Server closed gracefully');
-      process.exit(0);
-    } catch (error) {
-      logger.error({ error }, 'Error during shutdown');
-      process.exit(1);
-    }
-  };
-
-  process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-  process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+    reply.status(500).send({
+      success: false,
+      error: {
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'An internal server error occurred',
+      },
+    });
+  });
 
   return fastify;
-}
-
-// Declare WebSocket manager type for Fastify
-declare module 'fastify' {
-  interface FastifyInstance {
-    wsManager: WebSocketManager;
-  }
 }
