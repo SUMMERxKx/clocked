@@ -21,25 +21,9 @@
     "db:studio": "prisma studio"
   },
   "dependencies": {
-    "@clocked/shared": "file:../shared",
-    "@fastify/cors": "^8.4.0",
-    "@fastify/helmet": "^11.1.1",
-    "@fastify/jwt": "^7.2.4",
-    "@fastify/multipart": "^8.0.0",
-    "@fastify/rate-limit": "^9.1.0",
-    "@fastify/websocket": "^8.3.1",
-    "@prisma/client": "^5.7.1",
-    "bcryptjs": "^2.4.3",
-    "expo-server-sdk": "^3.7.0",
     "fastify": "^4.24.3",
-    "ioredis": "^5.3.2",
-    "jsonwebtoken": "^9.0.2",
-    "nodemailer": "^6.9.7",
     "pino": "^8.17.2",
-    "pino-pretty": "^10.3.1",
-    "socket.io": "^4.7.4",
-    "ws": "^8.14.2",
-    "zod": "^3.22.4"
+    "pino-pretty": "^10.3.1"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
