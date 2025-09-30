@@ -242,10 +242,10 @@ export async function leaderboardRoutes(fastify: FastifyInstance) {
     try {
       const authRequest = request as AuthenticatedRequest;
       const { groupId, userId } = request.params as { groupId: string; userId: string };
-      const query = request.query as z.infer<typeof z.object({
-        week: z.string().regex(/^\d{4}-W\d{2}$/).optional(),
-        category: z.enum(['WORK', 'STUDY', 'EXERCISE', 'HOBBY', 'SOCIAL', 'OTHER']).optional(),
-      })>;
+      const query = request.query as {
+        week?: string;
+        category?: 'WORK' | 'STUDY' | 'EXERCISE' | 'HOBBY' | 'SOCIAL' | 'OTHER';
+      };
       
       // Check if user is requesting their own stats or if they have permission
       if (userId !== authRequest.user.id) {
