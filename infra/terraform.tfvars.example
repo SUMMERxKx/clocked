@@ -1,0 +1,43 @@
+# AWS Configuration
+aws_region     = "us-west-2"
+aws_account_id = "123456789012"
+
+# Environment
+environment = "production"
+project_name = "clocked"
+
+# Database
+db_password = "your-secure-database-password"
+
+# JWT Secret (generate a secure random string)
+jwt_secret = "your-super-secure-jwt-secret-key-at-least-32-characters-long"
+
+# Domain (optional)
+domain_name = "clocked.app"
+certificate_arn = "arn:aws:acm:us-west-2:123456789012:certificate/12345678-1234-1234-1234-123456789012"
+
+# Monitoring
+enable_monitoring = true
+backup_retention_days = 7
+
+# Scaling
+app_instance_count = 2
+enable_auto_scaling = true
+min_capacity = 1
+max_capacity = 10
+target_cpu_utilization = 70
+target_memory_utilization = 80
+
+# Resource Sizing
+app_cpu = 512
+app_memory = 1024
+db_instance_class = "db.t3.micro"
+redis_node_type = "cache.t3.micro"
+
+# Additional Tags
+tags = {
+  Project     = "Clocked"
+  Environment = "production"
+  Owner       = "your-team"
+  CostCenter  = "engineering"
+}

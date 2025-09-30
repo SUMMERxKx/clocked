@@ -1,0 +1,97 @@
+{
+  "name": "clocked",
+  "version": "1.0.0",
+  "description": "A secure, production-ready mobile app for clocking in/out of activities within private groups",
+  "private": true,
+  "workspaces": [
+    "shared",
+    "server",
+    "mobile",
+    "scripts"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "type-check": "turbo run type-check",
+    "clean": "turbo run clean",
+    "security-scan": "./scripts/security-scan.sh",
+    "load-test": "cd scripts && npm run load-test",
+    "docker:dev": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "db:migrate": "cd server && npm run db:migrate",
+    "db:seed": "cd server && npm run db:seed",
+    "db:reset": "cd server && npm run db:reset",
+    "mobile:start": "cd mobile && npm start",
+    "mobile:build": "cd mobile && npm run build",
+    "server:start": "cd server && npm start",
+    "server:dev": "cd server && npm run dev",
+    "infra:plan": "cd infra && terraform plan",
+    "infra:apply": "cd infra && terraform apply",
+    "infra:destroy": "cd infra && terraform destroy",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3",
+    "@typescript-eslint/eslint-plugin": "^6.13.1",
+    "@typescript-eslint/parser": "^6.13.1",
+    "eslint": "^8.54.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-native": "^4.1.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.1.0",
+    "prettier": "^3.1.0",
+    "turbo": "^1.11.2",
+    "typescript": "^5.3.2"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/clocked.git"
+  },
+  "keywords": [
+    "mobile",
+    "react-native",
+    "expo",
+    "nodejs",
+    "fastify",
+    "prisma",
+    "postgresql",
+    "websockets",
+    "authentication",
+    "security",
+    "privacy",
+    "productivity",
+    "time-tracking"
+  ],
+  "author": "Clocked Team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/your-org/clocked/issues"
+  },
+  "homepage": "https://github.com/your-org/clocked#readme"
+}

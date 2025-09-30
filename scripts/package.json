@@ -1,0 +1,16 @@
+{
+  "name": "@clocked/scripts",
+  "version": "1.0.0",
+  "description": "Utility scripts for Clocked application",
+  "scripts": {
+    "load-test": "k6 run load-test.js",
+    "load-test:staging": "k6 run load-test.js --env BASE_URL=https://staging-api.clocked.app",
+    "load-test:production": "k6 run load-test.js --env BASE_URL=https://api.clocked.app",
+    "security-scan": "gitleaks detect --source . --verbose",
+    "container-scan": "trivy image clocked-server:latest",
+    "dependency-audit": "npm audit --audit-level moderate"
+  },
+  "devDependencies": {
+    "k6": "^0.0.0"
+  }
+}
