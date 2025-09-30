@@ -1,6 +1,5 @@
 import Fastify from 'fastify';
 import { config } from './config';
-import { logger } from './lib/logger';
 
 export async function createApp() {
   const fastify = Fastify({
@@ -30,7 +29,7 @@ export async function createApp() {
 
   // Error handler
   fastify.setErrorHandler(async (error, request, reply) => {
-    logger.error({ error, request: request.url }, 'Request error');
+    console.error('Request error:', error, request.url);
     
     reply.status(500).send({
       success: false,

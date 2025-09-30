@@ -1,6 +1,5 @@
 import { createApp } from './app';
 import { config } from './config';
-import { logger } from './lib/logger';
 
 async function start() {
   try {
@@ -11,11 +10,11 @@ async function start() {
       host: '0.0.0.0',
     });
     
-    logger.info(`🚀 Server listening at ${address}`);
-    logger.info(`📊 Health check: ${address}/health`);
-    logger.info(`🔧 API status: ${address}/api/status`);
+    console.log(`🚀 Server listening at ${address}`);
+    console.log(`📊 Health check: ${address}/health`);
+    console.log(`🔧 API status: ${address}/api/status`);
   } catch (error) {
-    logger.error({ error }, 'Failed to start server');
+    console.error('Failed to start server:', error);
     process.exit(1);
   }
 }
